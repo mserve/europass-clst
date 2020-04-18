@@ -1,0 +1,18 @@
+[ for_seal ]
+# for the eseal
+basicConstraints	= CA:FALSE
+subjectKeyIdentifier	= hash
+authorityKeyIdentifier  = keyid,issuer
+#keyUsage = digitalSignature, keyEncipherment, keyAgreement
+#extendedKeyUsage	= serverAuth
+qcs-QcType = qct-eseal
+
+[ for_sign ]
+# passwordless signing in for clients using browsers,
+# or sending (and receiving) S/MIME encrypted emails
+basicConstraints	= CA:FALSE
+subjectKeyIdentifier	= hash
+authorityKeyIdentifier  = keyid,issuer
+#keyUsage		= digitalSignature, keyEncipherment, keyAgreement, nonRepudiation, dataEncipherment
+#extendedKeyUsage	= clientAuth, emailProtection, msSmartcardLogin
+qcs-QcType = qct-esign
