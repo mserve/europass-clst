@@ -1,18 +1,21 @@
+[req]
+distinguished_name = req_distinguished_name
+
+[req_distinguished_name]
+
+
+#oid_section = new_oids
+#[ new_oids ]
+# organizationIdentifier = 2.5.4.97 # OpenSSL may not recognize this OID so need to add.
+
 [ for_seal ]
 # for the eseal
-basicConstraints	= CA:FALSE
-subjectKeyIdentifier	= hash
-authorityKeyIdentifier  = keyid,issuer
-#keyUsage = digitalSignature, keyEncipherment, keyAgreement
-#extendedKeyUsage	= serverAuth
-qcs-QcType = qct-eseal
+keyUsage = critical,digitalSignature,nonRepudiation
+subjectKeyIdentifier = hash
+qcStatements=DER:30363008060604008e460101300b060604008e4601030201143008060604008e4601043013060604008e4601063009060704008e46010602
 
 [ for_sign ]
 # passwordless signing in for clients using browsers,
-# or sending (and receiving) S/MIME encrypted emails
-basicConstraints	= CA:FALSE
-subjectKeyIdentifier	= hash
-authorityKeyIdentifier  = keyid,issuer
-#keyUsage		= digitalSignature, keyEncipherment, keyAgreement, nonRepudiation, dataEncipherment
-#extendedKeyUsage	= clientAuth, emailProtection, msSmartcardLogin
-qcs-QcType = qct-esign
+keyUsage = critical,digitalSignature,nonRepudiation
+subjectKeyIdentifier = hash
+qcStatements=DER:30363008060604008e460101300b060604008e4601030201143008060604008e4601043013060604008e4601063009060704008e46010601

@@ -1,13 +1,16 @@
 # Step 1: Create dummy CA
 # Create the key
-openssl ecparam -genkey -name prime256v1 -out "out/dummy-ca.key"
+#openssl ecparam -genkey -name prime256v1 -out "out/dummy-ca.key"
+#openssl ecparam -genkey -name prime256v1 -out "out/dummy-ca.key"
+openssl genrsa -out "out/dummy-ca.key" 4096
 # Create a CSR
 #openssl req -new -nodes -sha512 \
 #		-key "out/dummy-ca.key" -subj "${CAsubj}" -out "put/dummy-ca.csr"
 # We issue self-signed cert for the CA
 # without any key constraints or extended usages (,=all permitted):
+#        -sigopt rsa_padding_mode:pss -sigopt rsa_pss_saltlen:32 \
 openssl req -new -x509 -sha512 -set_serial 1 -days 30 \
-		-subj "/C=DE/L=Berlin/O=No-Trust CA/CN=No-Trust Root CA 42" \
+        -subj "/C=DE/L=Berlin/O=No-Trust CA/CN=No-Trust Root CA 42" \
         -key "out/dummy-ca.key" -out "out/dummy-ca.crt"
 
 # Step 2: Create dummy certs
@@ -15,10 +18,11 @@ openssl req -new -x509 -sha512 -set_serial 1 -days 30 \
 # Serial Seal: 420042 
 #openssl ecparam -genkey -name prime256v1 -out "out/e-seal.key"
 openssl genrsa -out "out/e-seal.key" 4096
+#PSS Parameters:        -sigopt rsa_padding_mode:pss -sigopt rsa_pss_saltlen:32 \
 openssl req -new -nodes -sha512 \
-        -sigopt rsa_padding_mode:pss -sigopt rsa_pss_saltlen:32 \
-        -subj "/C=DE/L=Berlin/O=Homer Simpson Vocational College/CN=Homer Simpson Vocational College" \
-        -config "qc_config.cnf" \
+        -subj "/C=DE/L=Berlin/O=Homer Simpson Vocational College/CN=Homer Simpson Vocational College/organizationIdentifier=DE:BSN-08B04" \
+        -config "qc_extensions.cnf" \
+        -extensions for_seal \
 		-key "out/e-seal.key" -out "out/e-seal.csr"
 openssl x509 -req -sha512 -set_serial 420042 -days 15 \
 		-CAkey "out/dummy-ca.key" -CA "out/dummy-ca.crt" \
@@ -31,7 +35,8 @@ openssl genrsa -out "out/e-sign.key" 4096
 openssl req -new -nodes -sha512 \
         -sigopt rsa_padding_mode:pss -sigopt rsa_pss_saltlen:32 \
         -subj "/C=DE/L=Berlin/O=Homer Simpson Vocational College/CN=Seymour Skinner" \
-        -config "qc_config.cnf" \
+        -config "qc_extensions.cnf" \
+        -extensions for_sign \
 		-key "out/e-sign.key" -out "out/e-sign.csr"
 openssl x509 -req -sha512 -set_serial 230023 -days 15 \
 		-CAkey "out/dummy-ca.key" -CA "out/dummy-ca.crt" \
