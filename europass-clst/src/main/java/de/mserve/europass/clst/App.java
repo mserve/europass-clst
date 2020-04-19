@@ -1,39 +1,45 @@
 package de.mserve.europass.clst;
 
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.mserve.europass.model.CertificateEntry;
-import de.mserve.europass.tasks.CertificateLoader;
+import de.mserve.europass.tasks.ListCertificates;
+import de.mserve.europass.tasks.SignXML;
+import de.mserve.europass.tasks.ValidateXML;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Spec;
+import picocli.CommandLine.Model.CommandSpec;
 
 /**
  * Hello world!
  *
  */
-public class App {
+@Command(name = "europass-clst", mixinStandardHelpOptions = true, version = "subcommand demo 3.0",
+        description = "europass-clst allows to sign Europass Digital Credential XML files via command line.",
+        commandListHeading = "%nCommands:%n%nThe most commonly used commands are:%n",
+        footer = "%nSee 'europass-clst help <command>' to read about a specific subcommand or concept.",
+        subcommands = {
+                ListCertificates.class,
+                SignXML.class,
+                ValidateXML.class,
+                CommandLine.HelpCommand.class
+        })
+public class App implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(App.class);
 
-    public static void main(String[] args) {
-        // Load certicicates
-        final String OS = System.getProperty("os.name").toLowerCase();
-        CertificateLoader cl;
-        if (OS.indexOf("win") >= 0) {
-            cl = CertificateLoader.MSCAPI();
-        } else {
-            cl = CertificateLoader.PKCS12(
-                    "/workspace/europass-clst/europass-clst/src/test/java/de/mserve/europass/clst/e-seal.p12",
-                     "seal");
-        }
+    @Spec
+    CommandSpec spec;
 
-        // Enumerate certificates
-        final List<CertificateEntry> certs = cl.enumerateKeys();
-        int count = 0;
-        for (CertificateEntry c : certs) {
-            System.out.format("[%d] %s%n", count, c.getLabel());
-            count++;
-        }
+    @Override
+    public void run() {
+        // if the command was invoked without subcommand, show the usage help
+        spec.commandLine().usage(System.err);
+    }
+
+    public static void main(String[] args) {
+        System.exit(new CommandLine(new App()).execute(args));
     }
 }

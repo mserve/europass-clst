@@ -4,7 +4,14 @@ distinguished_name = req_distinguished_name
 [req_distinguished_name]
 
 [for_seal]
+keyUsage=nonRepudiation
 1.3.6.1.5.5.7.1.3=ASN1:SEQUENCE:qcStatementSeal
+basicConstraints=CA:FALSE
+
+[for_sign]
+keyUsage=nonRepudiation
+1.3.6.1.5.5.7.1.3=ASN1:SEQUENCE:qcStatementSign
+basicConstraints=CA:FALSE
 
 [qcStatementSeal]
 etsiQcsCompliance=SEQUENCE:etsiQcsCompliance
@@ -25,8 +32,7 @@ statementInfo=SEQUENCE:qcs-QcType-Info-Seal
 [qcs-QcType-Info-Seal]
 qct-eseal=OID:0.4.0.1862.1.6.2
 
-[for_sign]
-1.3.6.1.5.5.7.1.3=ASN1:SEQUENCE:qcStatementSign
+
 
 [qcStatementSign]
 etsiQcsCompliance=SEQUENCE:etsiQcsCompliance

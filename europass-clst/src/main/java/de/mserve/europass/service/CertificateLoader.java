@@ -1,5 +1,6 @@
-package de.mserve.europass.tasks;
+package de.mserve.europass.service;
 
+import java.io.File;
 import java.security.KeyStore.PasswordProtection;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,10 @@ public class CertificateLoader {
     public static CertificateLoader PKCS12(String filename) {
         return CertificateLoader.PKCS12(filename, "");
     }
+    
+    public static CertificateLoader PKCS12(File filename, char[] password) {
+        return CertificateLoader.PKCS12(filename.getAbsolutePath(), new String(password));
+    }
 
     public static CertificateLoader PKCS12(String filename, String password) {
         CertificateLoader cl = new CertificateLoader();
@@ -43,7 +48,7 @@ public class CertificateLoader {
         if (password != null)
             cl.pkcs12Password = password;
         else
-            cl.pkcs12Password = "password";
+            cl.pkcs12Password = "";
 
         cl.loadCertificates();
         return cl;

@@ -28,11 +28,11 @@ ${openssl} req -new -x509 -sha512 -set_serial 1 -days 30 \
 # Serial Seal: 420042
 #openssl ecparam -genkey -name prime256v1 -out "out/e-seal.key"
 if [ ! -f "out/e-seal.key" ]; then
-    openssl genrsa -out "out/e-seal.key" 4096
+    ${openssl} genrsa -out "out/e-seal.key" 4096
 fi
 #PSS Parameters:        -sigopt rsa_padding_mode:pss -sigopt rsa_pss_saltlen:32 \
 ${openssl} req -new -nodes -sha512 \
-        -subj "/C=DE/L=Berlin/O=Homer Simpson Vocational College/CN=Homer Simpson Vocational College/organizationIdentifier=DE:BSN-08B04" \
+        -subj "/C=DE/L=Berlin/O=Homer Simpson Vocational College/CN=Homer Simpson Vocational College/streetAddress=19 Plympton Street/postalCode=27728/organizationIdentifier=DE:BSN-08B04" \
         -config "qc_extensions.cnf" \
         -extensions for_seal \
 		-key "out/e-seal.key" -out "out/e-seal.csr"
@@ -50,7 +50,7 @@ if [ ! -f "out/e-sign.key" ]; then
 fi    
 ${openssl} req -new -nodes -sha512 \
         -sigopt rsa_padding_mode:pss -sigopt rsa_pss_saltlen:32 \
-        -subj "/C=DE/L=Berlin/O=Homer Simpson Vocational College/CN=Seymour Skinner" \
+        -subj "/C=DE/L=Berlin/O=Homer Simpson Vocational College/CN=Homer Simpson Vocational College/streetAddress=19 Plympton Street/postalCode=27728/CN=Seymour Skinner" \
         -config "qc_extensions.cnf" \
         -extensions for_sign \
 		-key "out/e-sign.key" -out "out/e-sign.csr"
@@ -69,7 +69,5 @@ ${openssl} pkcs12 -export -passout "pass:seal" -in "out/e-seal.crt" -inkey "out/
 cp out/*.p12 ../europass-clst/src/test/java/de/mserve/europass/clst/
 
 # Step 5: Check content
-echo "ASN1 qcStatements from e-seal.crt:"
-${openssl} asn1parse -in "out/e-seal.crt" | awk '/qcStatements/ { getline; print $0 }' | sed -n -e 's/^.*://p' | xxd -r -p | base64 | ${openssl} asn1parse -oid 'oid_data.txt' -in /dev/stdin
-echo "ASN1 qcStatements from e-sign.crt:"
-${openssl} asn1parse -in "out/e-sign.crt" | awk '/qcStatements/ { getline; print $0 }' | sed -n -e 's/^.*://p' | xxd -r -p | base64 | ${openssl} asn1parse -oid 'oid_data.txt' -in /dev/stdin
+./check_crt.sh "out/e-seal.crt"
+./check_crt.sh "out/e-sign.crt"

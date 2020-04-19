@@ -24,13 +24,22 @@ public class CertificateEntry {
         final CertificateToken certToken = dssPrivateKeyEntry.getCertificate();
         this.label = DSSASN1Utils.getHumanReadableName(certToken) + " (" + certToken.getSerialNumber() + ")";
         final List<String> qcStatements = DSSASN1Utils.getQCStatementsIdList(certToken);
+        final List<String> qcTypes = DSSASN1Utils.getQCTypesIdList(certToken);
         if (qcStatements.contains(QCStatement.QC_COMPLIANCE.getOid())) {
             this.label = this.label + " [Qualified]";
             this.properties.add(QCStatement.QC_COMPLIANCE);
         }
-        if (qcStatements.contains(QCStatement.QCT_ESIGN.getOid())) {
+        if (qcStatements.contains(QCStatement.QC_SSCD.getOid())) {
+            this.label = this.label + " [Qualified Signature Creation Device]";
+            this.properties.add(QCStatement.QC_COMPLIANCE);
+        }
+        if (qcTypes.contains(QCStatement.QCT_ESIGN.getOid())) {
             this.label = this.label + " [E-Sign]";
             this.properties.add(QCStatement.QCT_ESIGN);
+        }
+        if (qcTypes.contains(QCStatement.QCT_ESEAL.getOid())) {
+            this.label = this.label + " [E-Seal]";
+            this.properties.add(QCStatement.QCT_ESEAL);
         }
     }
 
