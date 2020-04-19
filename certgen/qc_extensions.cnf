@@ -3,19 +3,36 @@ distinguished_name = req_distinguished_name
 
 [req_distinguished_name]
 
+[for_seal]
+1.3.6.1.5.5.7.1.3=ASN1:SEQUENCE:qcStatementSeal
 
-#oid_section = new_oids
-#[ new_oids ]
-# organizationIdentifier = 2.5.4.97 # OpenSSL may not recognize this OID so need to add.
+[qcStatementSeal]
+etsiQcsCompliance=SEQUENCE:etsiQcsCompliance
+qcs-QcType=SEQUENCE:qcs-QcType-Seal
 
-[ for_seal ]
-# for the eseal
-keyUsage = critical,digitalSignature,nonRepudiation
-subjectKeyIdentifier = hash
-qcStatements=DER:30363008060604008e460101300b060604008e4601030201143008060604008e4601043013060604008e4601063009060704008e46010602
+[etsiQcsCompliance]
+statementId=OID:0.4.0.1862.1.1
 
-[ for_sign ]
-# passwordless signing in for clients using browsers,
-keyUsage = critical,digitalSignature,nonRepudiation
-subjectKeyIdentifier = hash
-qcStatements=DER:30363008060604008e460101300b060604008e4601030201143008060604008e4601043013060604008e4601063009060704008e46010601
+[qcs-QcType-Seal]
+statementId=OID:0.4.0.1862.1.6
+statementInfo=SEQUENCE:qcs-QcType-Info-Seal
+
+[qcs-QcType-Info-Seal]
+qct-eseal=OID:0.4.0.1862.1.6.2
+
+[for_sign]
+1.3.6.1.5.5.7.1.3=ASN1:SEQUENCE:qcStatementSign
+
+[qcStatementSign]
+etsiQcsCompliance=SEQUENCE:etsiQcsCompliance
+qcs-QcType=SEQUENCE:qcs-QcType-Sign
+
+[etsiQcsCompliance]
+statementId=OID:0.4.0.1862.1.1
+
+[qcs-QcType-Sign]
+statementId=OID:0.4.0.1862.1.6
+statementInfo=SEQUENCE:qcs-QcType-Info-Sign
+
+[qcs-QcType-Info-Sign]
+qct-esign=OID:0.4.0.1862.1.6.1
