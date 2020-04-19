@@ -8,7 +8,12 @@ distinguished_name = req_distinguished_name
 
 [qcStatementSeal]
 etsiQcsCompliance=SEQUENCE:etsiQcsCompliance
+qcs-QcSSCD=SEQUENCE:qcs-QcSSCD
 qcs-QcType=SEQUENCE:qcs-QcType-Seal
+
+
+[qcs-QcSSCD]
+statementId=OID:0.4.0.1862.1.4
 
 [etsiQcsCompliance]
 statementId=OID:0.4.0.1862.1.1
@@ -25,10 +30,8 @@ qct-eseal=OID:0.4.0.1862.1.6.2
 
 [qcStatementSign]
 etsiQcsCompliance=SEQUENCE:etsiQcsCompliance
+qcs-QcSSCD=SEQUENCE:qcs-QcSSCD
 qcs-QcType=SEQUENCE:qcs-QcType-Sign
-
-[etsiQcsCompliance]
-statementId=OID:0.4.0.1862.1.1
 
 [qcs-QcType-Sign]
 statementId=OID:0.4.0.1862.1.6

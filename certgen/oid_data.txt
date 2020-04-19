@@ -1,10 +1,20 @@
-0.4.0.1862.1.1=etsiQcsCompliance]
+0.4.0.1862.1.1=QcCompliance
+0.4.0.1862.1.2=QcLimitValue
+0.4.0.1862.1.3=QcRetentionPeriod
+0.4.0.1862.1.4=QcSSCD
 0.4.0.1862.1.5=qcs-QcPDS
+0.4.0.1862.1.6=QcType
+0.4.0.1862.1.6.1=esign
+0.4.0.1862.1.6.2=eseal
+0.4.0.1862.1.6.3=web
+0.4.0.19495.1, RoleOfPsp
 0.4.0.19495.1.1=PSP_AS
 0.4.0.19495.1.2=PSP_PI
 0.4.0.19495.1.3=PSP_AI
 0.4.0.19495.1.4=PCP_IC
-0.4.0.1862.1.6=qcStatement
-0.4.0.1862.1.6.1=qct-esign
-0.4.0.1862.1.6.2=qct-eseal
-0.4.0.1862.1.6.3=qct-web
+0.4.0.19495.2=PSD2-QCStatement
+0.4.0.194112.1.0=QCP-n
+0.4.0.194112.1.1=QCP-l
+0.4.0.194112.1.2=QCP-n-qscd
+0.4.0.194112.1.3=QCP-l-qscd
+0.4.0.194112.1.4=QCP-w
