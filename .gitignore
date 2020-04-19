@@ -15,3 +15,5 @@ buildNumber.properties
 .project
 out/
 *.p12
+*.crt
+!/**/.gitkeep
