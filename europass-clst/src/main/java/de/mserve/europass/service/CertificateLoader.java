@@ -20,8 +20,8 @@ public class CertificateLoader {
 
     private List<DSSPrivateKeyEntry> keys;
     private SignatureTokenType tokenType;
-    private String pkcs12Filename;
-    private String pkcs12Password;
+    private File pkcs12File;
+    private char[] pkcs12Password;
 
     private CertificateLoader() {
     }
@@ -33,23 +33,18 @@ public class CertificateLoader {
         return cl;
     }
 
-    public static CertificateLoader PKCS12(String filename) {
-        return CertificateLoader.PKCS12(filename, "");
-    }
-    
-    public static CertificateLoader PKCS12(File filename, char[] password) {
-        return CertificateLoader.PKCS12(filename.getAbsolutePath(), new String(password));
+    public static CertificateLoader PKCS12(File file) {
+        return CertificateLoader.PKCS12(file, null);
     }
 
-    public static CertificateLoader PKCS12(String filename, String password) {
+    public static CertificateLoader PKCS12(File file, char[] password) {
         CertificateLoader cl = new CertificateLoader();
         cl.tokenType = SignatureTokenType.PKCS12;
-        cl.pkcs12Filename = filename;
-        if (password != null)
-            cl.pkcs12Password = password;
+        cl.pkcs12File = file;
+        if (password == null || password.length == 0)
+            cl.pkcs12Password = "".toCharArray();
         else
-            cl.pkcs12Password = "";
-
+            cl.pkcs12Password = password;
         cl.loadCertificates();
         return cl;
     }
@@ -62,8 +57,8 @@ public class CertificateLoader {
                 }
                 break;
             case PKCS12:
-                try (Pkcs12SignatureToken token = new Pkcs12SignatureToken(this.pkcs12Filename,
-                        new PasswordProtection(this.pkcs12Password.toCharArray()))) {
+                try (Pkcs12SignatureToken token = new Pkcs12SignatureToken(this.pkcs12File,
+                        new PasswordProtection(this.pkcs12Password))) {
                     this.keys = token.getKeys();
                 } catch (final Exception e) {
                     LOG.error(e.getMessage(), e);

@@ -1,5 +1,6 @@
 package de.mserve.europass.clst;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -31,8 +32,8 @@ public class TestApp {
             cl = CertificateLoader.MSCAPI();
         } else {
             cl = CertificateLoader.PKCS12(
-                    "/workspace/europass-clst/europass-clst/src/test/java/de/mserve/europass/clst/e-seal.p12",
-                     "seal");
+                    new File("/workspace/europass-clst/europass-clst/src/test/java/de/mserve/europass/clst/e-seal.p12"),
+                     "seal".toCharArray());
         }
 
         // Enumerate certificates
