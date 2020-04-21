@@ -8,6 +8,7 @@
     <url>http://maven.apache.org</url>
 
     <properties>
+        <europass-clst.version>0.1.0.0</europass-clst.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.source.version>1.8</project.source.version>
@@ -16,6 +17,8 @@
         <slf4j.version>1.7.30</slf4j.version>
         <junit.version>4.12</junit.version>
         <picocli.version>4.2.0</picocli.version>
+        <maven-compiler-plugin.version>3.5</maven-compiler-plugin.version>
+        <launch4j-maven-plugin.version>1.7.25</launch4j-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -115,6 +118,24 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!-- annotationProcessorPaths requires maven-compiler-plugin version 3.5 or higher -->
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>info.picocli</groupId>
+                            <artifactId>picocli-codegen</artifactId>
+                            <version>4.2.0</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <archive>
@@ -126,7 +147,78 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attached</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>${launch4j-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>l4j-clui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>console</headerType>
+                            <outfile>target/europass-clst.exe</outfile>
+                            <jar>target/europass-clst-${project.version}-jar-with-dependencies.jar</jar>
+                            <errTitle>europass-clst</errTitle>
+                            <classPath>
+                                <mainClass>de.mserve.europass.clst.App</mainClass>
+                                <addDependencies>true</addDependencies>
+                                <preCp>anything</preCp>
+                            </classPath>
+                            <jre>
+                                <minVersion>1.8.0</minVersion>
+                                <!-- <maxVersion>1.8.0</maxVersion>
+                                <opts>
+                                    <opt>-Djava.endorsed.dirs=./endorsed</opt>
+                                </opts>
+                            -->
+                            </jre>
+                            <versionInfo>
+                                <fileVersion>${europass-clst.version}</fileVersion>
+                                <txtFileVersion>${project.version}</txtFileVersion>
+                                <fileDescription>Europass Command Line Signing Tool</fileDescription>
+                                <copyright>(c) Martin Schleyer</copyright>
+                                <productVersion>${europass-clst.version}</productVersion>
+                                <txtProductVersion>${project.version}</txtProductVersion>
+                                <productName>Europass Command Line Signing Tool</productName>
+                                <internalName>europass-clst</internalName>
+                                <originalFilename>europass-clst.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin> -->
         </plugins>
     </build>
 </project>
