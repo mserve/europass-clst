@@ -12,6 +12,7 @@ import de.mserve.europass.model.CertificateEntry;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.MSCAPISignatureToken;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.enumerations.SignatureTokenType;
 
 public class CertificateLoader {
@@ -20,6 +21,7 @@ public class CertificateLoader {
 
     private List<DSSPrivateKeyEntry> keys;
     private SignatureTokenType tokenType;
+    private SignatureTokenConnection signatureToken;
     private File pkcs12File;
     private char[] pkcs12Password;
 
@@ -54,12 +56,14 @@ public class CertificateLoader {
             case MSCAPI:
                 try (MSCAPISignatureToken token = new MSCAPISignatureToken()) {
                     this.keys = token.getKeys();
+                    this.signatureToken = token;
                 }
                 break;
             case PKCS12:
                 try (Pkcs12SignatureToken token = new Pkcs12SignatureToken(this.pkcs12File,
                         new PasswordProtection(this.pkcs12Password))) {
                     this.keys = token.getKeys();
+                    this.signatureToken = token;
                 } catch (final Exception e) {
                     LOG.error(e.getMessage(), e);
                 }
@@ -74,7 +78,7 @@ public class CertificateLoader {
         final List<CertificateEntry> list = new ArrayList<CertificateEntry>();
         try {
             for (final DSSPrivateKeyEntry dssPrivateKeyEntry : keys) {
-                CertificateEntry c = new CertificateEntry(dssPrivateKeyEntry);
+                CertificateEntry c = new CertificateEntry(this.signatureToken, dssPrivateKeyEntry);
                 list.add(c);
             }
         } catch (final Exception e) {

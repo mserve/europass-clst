@@ -7,18 +7,28 @@ import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
 
 public class CertificateEntry {
     private DSSPrivateKeyEntry entry;
+    private SignatureTokenConnection signatureToken;
     private ArrayList<QCStatement> properties = new ArrayList<>();
     private String label;
 
-    public CertificateEntry(DSSPrivateKeyEntry _entry) {
+    public CertificateEntry(SignatureTokenConnection _stc, DSSPrivateKeyEntry _entry) {
         if (_entry != null) {
             this._setEntry(_entry);
+            if (_stc != null) {
+                if (_stc.getKeys().contains(_entry))
+                    this._setSignatureToken(_stc);
+            }
         }
     }
-
+    
+    private void _setSignatureToken(SignatureTokenConnection stc) {
+        this.signatureToken = stc;
+    }
+    
     private void _setEntry(DSSPrivateKeyEntry dssPrivateKeyEntry) {
         this.entry = dssPrivateKeyEntry;
         final CertificateToken certToken = dssPrivateKeyEntry.getCertificate();
@@ -46,9 +56,15 @@ public class CertificateEntry {
     public DSSPrivateKeyEntry getEntry() {
         return entry;
     }
+
+    public SignatureTokenConnection getSignatureToken() {
+        return signatureToken;
+    }
+
     public String getLabel() {
         return label;
     }
+
     public boolean hasProperty(QCStatement qcs) {
         return this.properties.contains(qcs);
     }
