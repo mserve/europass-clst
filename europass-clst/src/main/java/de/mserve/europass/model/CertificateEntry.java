@@ -31,7 +31,7 @@ public class CertificateEntry {
         }
         if (qcStatements.contains(QCStatement.QC_SSCD.getOid())) {
             this.label = this.label + " [Qualified Signature Creation Device]";
-            this.properties.add(QCStatement.QC_COMPLIANCE);
+            this.properties.add(QCStatement.QC_SSCD);
         }
         if (qcTypes.contains(QCStatement.QCT_ESIGN.getOid())) {
             this.label = this.label + " [E-Sign]";
@@ -50,10 +50,14 @@ public class CertificateEntry {
         return label;
     }
     public boolean hasProperty(QCStatement qcs) {
-        return this.properties.contains(QCStatement.QCT_ESIGN);
+        return this.properties.contains(qcs);
     }
 
     public List<QCStatement> getProperties() {
         return this.properties;
+    }
+
+    public boolean equals(CertificateEntry e) {
+        return this.entry.equals(e.entry);
     }
 }
