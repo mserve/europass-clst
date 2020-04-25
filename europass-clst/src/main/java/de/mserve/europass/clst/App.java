@@ -7,6 +7,7 @@ package de.mserve.europass.clst;
 import de.mserve.europass.tasks.ListCertificates;
 import de.mserve.europass.tasks.SignXML;
 import de.mserve.europass.tasks.ValidateXML;
+import de.mserve.europass.tasks.VerifyXML;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Spec;
@@ -16,7 +17,7 @@ import picocli.CommandLine.Model.CommandSpec;
  * Hello world!
  *
  */
-@Command(name = "europass-clst", mixinStandardHelpOptions = true, version = "subcommand demo 3.0",
+@Command(name = "europass-clst", mixinStandardHelpOptions = true, version = "europass-clst 0.1",
         description = "europass-clst allows to sign Europass Digital Credential XML files via command line.",
         commandListHeading = "%nCommands:%n%nThe most commonly used commands are:%n",
         footer = "%nSee 'europass-clst help <command>' to read about a specific subcommand or concept.",
@@ -24,6 +25,7 @@ import picocli.CommandLine.Model.CommandSpec;
                 ListCertificates.class,
                 SignXML.class,
                 ValidateXML.class,
+                VerifyXML.class,
                 CommandLine.HelpCommand.class
         })
 public class App implements Runnable {
