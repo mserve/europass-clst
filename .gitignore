@@ -15,6 +15,7 @@ buildNumber.properties
 .project
 .factorypath
 out/
+temp/
 *.p12
 *.crt
 !/**/.gitkeep

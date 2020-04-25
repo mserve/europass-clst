@@ -1,6 +1,7 @@
 package de.mserve.europass.service;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -82,7 +83,7 @@ public class XmlSigner {
         LOG.info("Signature value: {} bytes", signatureValue.getValue().length);
         DSSDocument signedDocument = service.signDocument(document, parameters, signatureValue);
         LOG.info("XML filed successfully signed with key '{}''",  this.cert.getLabel());
-        String outFilePath = FilenameUtils.getFullPath(outDir) + FilenameUtils.getBaseName(xml.getAbsolutePath()) + "-signed.xml";
+        String outFilePath = Paths.get(outDir, FilenameUtils.getBaseName(xml.getAbsolutePath()) + "-signed.xml").toAbsolutePath().toString();
         try {
             signedDocument.save(outFilePath);
         } catch (Exception e) {
