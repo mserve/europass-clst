@@ -15,7 +15,7 @@ import eu.europa.esig.dss.token.Pkcs12SignatureToken;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.enumerations.SignatureTokenType;
 
-public class CertificateLoader {
+public class CertificateLoader implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(CertificateLoader.class);
 
@@ -54,14 +54,18 @@ public class CertificateLoader {
     private void loadCertificates() {
         switch (this.tokenType) {
             case MSCAPI:
-                try (MSCAPISignatureToken token = new MSCAPISignatureToken()) {
+                try {
+                    MSCAPISignatureToken token = new MSCAPISignatureToken();
                     this.keys = token.getKeys();
                     this.signatureToken = token;
+                } catch (final Exception e) {
+                    LOG.error(e.getMessage(), e);
                 }
                 break;
             case PKCS12:
-                try (Pkcs12SignatureToken token = new Pkcs12SignatureToken(this.pkcs12File,
-                        new PasswordProtection(this.pkcs12Password))) {
+                try {
+                    Pkcs12SignatureToken token = new Pkcs12SignatureToken(this.pkcs12File,
+                            new PasswordProtection(this.pkcs12Password));
                     this.keys = token.getKeys();
                     this.signatureToken = token;
                 } catch (final Exception e) {
@@ -85,5 +89,11 @@ public class CertificateLoader {
             LOG.error(e.getMessage(), e);
         }
         return list;
+    }
+
+    @Override
+    public void close() {
+        if (this.signatureToken != null)
+            this.signatureToken.close();
     }
 }

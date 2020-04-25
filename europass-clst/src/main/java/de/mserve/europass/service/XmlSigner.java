@@ -42,7 +42,7 @@ public class XmlSigner {
         this.parameters = new XAdESSignatureParameters();
         // Default settings
         this.parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-        this.parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+        this.parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
         this.parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
         // Add key
         this.parameters.setSigningCertificate(this.cert.getEntry().getCertificate());
@@ -57,28 +57,39 @@ public class XmlSigner {
     }
 
     public boolean sign(File xml) {
+        return sign(xml, FilenameUtils.getFullPath(xml.getAbsolutePath()));
+    }
+    public boolean sign(File xml, String outDir) {
         
         // Prepare the service
         XAdESService service = new XAdESService(new CommonCertificateVerifier());
             // Prepare the document
-        LOG.info("Loading XML file '%s''",  xml.getAbsolutePath());
+        LOG.info("Loading XML file '{}''",  xml.getAbsolutePath());
         DSSDocument document = new FileDocument(xml);
-        LOG.info("Using signature level %s, packaging %s, digest %s", this.parameters.getSignatureLevel().name(), 
+        LOG.info("Using signature level {}, packaging {}, digest {}", this.parameters.getSignatureLevel().name(), 
         this.parameters.getSignaturePackaging().name(), this.parameters.getDigestAlgorithm().name());
         ToBeSigned dataToSign = service.getDataToSign(document, parameters);
         DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
+        if (this.cert == null) {
+            LOG.error("No valid certifitate set");
+            return false;
+        }
+        if (this.cert.getSignatureToken()  == null) {
+            LOG.error("Certificate '{}' has no valid token", this.cert.getLabel());
+            return false;
+        }
         SignatureValue signatureValue = this.cert.getSignatureToken().sign(dataToSign, digestAlgorithm, this.cert.getEntry());
-        LOG.info("Signature value: %d bytes", signatureValue.getValue().length);
+        LOG.info("Signature value: {} bytes", signatureValue.getValue().length);
         DSSDocument signedDocument = service.signDocument(document, parameters, signatureValue);
-        LOG.info("XML filed successfully signed with key '%s''",  this.cert.getLabel());
-        String outFilePath = FilenameUtils.getPath(xml.getAbsolutePath()) + FilenameUtils.getBaseName(xml.getAbsolutePath()) + "-signed.xml";
+        LOG.info("XML filed successfully signed with key '{}''",  this.cert.getLabel());
+        String outFilePath = FilenameUtils.getFullPath(outDir) + FilenameUtils.getBaseName(xml.getAbsolutePath()) + "-signed.xml";
         try {
             signedDocument.save(outFilePath);
         } catch (Exception e) {
-            LOG.error("error writing to path '%s'",  outFilePath);
+            LOG.error("error writing to path '{}'",  outFilePath);
             return false;    
         }
-        LOG.info("XML filed successfully written to path '%s'",  outFilePath);
+        LOG.info("XML filed successfully written to path '{}'",  outFilePath);
         return true;
     }
 

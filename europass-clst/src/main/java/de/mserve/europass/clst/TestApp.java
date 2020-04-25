@@ -1,11 +1,10 @@
 package de.mserve.europass.clst;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
 import de.mserve.europass.model.CertificateEntry;
 import de.mserve.europass.service.CertificateLoader;
@@ -18,7 +17,7 @@ import eu.europa.esig.dss.enumerations.QCStatement;
  */
 public class TestApp {
 
-    private static final Logger LOG = LoggerFactory.getLogger(App.class);
+    // private static final Logger LOG = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) {
         // Show OIDs
@@ -48,6 +47,6 @@ public class TestApp {
         // Sign document
         XmlSigner xs = XmlSigner.build(certs.get(0));
         xs.sign(new File(
-                "/workspace/europass-clst/europass-clst/src/test/resources/de/mserve/europass/clst/hello.xml"));
+                "/workspace/europass-clst/europass-clst/src/test/resources/de/mserve/europass/clst/hello.xml"), "./");
     }
 }

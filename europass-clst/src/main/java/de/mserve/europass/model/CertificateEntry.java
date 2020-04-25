@@ -19,16 +19,16 @@ public class CertificateEntry {
         if (_entry != null) {
             this._setEntry(_entry);
             if (_stc != null) {
-                if (_stc.getKeys().contains(_entry))
-                    this._setSignatureToken(_stc);
+                // if (_stc.getKeys().contains(_entry))
+                this._setSignatureToken(_stc);
             }
         }
     }
-    
+
     private void _setSignatureToken(SignatureTokenConnection stc) {
         this.signatureToken = stc;
     }
-    
+
     private void _setEntry(DSSPrivateKeyEntry dssPrivateKeyEntry) {
         this.entry = dssPrivateKeyEntry;
         final CertificateToken certToken = dssPrivateKeyEntry.getCertificate();

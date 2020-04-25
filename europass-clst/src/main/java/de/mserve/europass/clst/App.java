@@ -1,8 +1,8 @@
 package de.mserve.europass.clst;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
 import de.mserve.europass.tasks.ListCertificates;
 import de.mserve.europass.tasks.SignXML;
@@ -28,7 +28,7 @@ import picocli.CommandLine.Model.CommandSpec;
         })
 public class App implements Runnable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(App.class);
+    // private static final Logger LOG = LoggerFactory.getLogger(App.class);
 
     @Spec
     CommandSpec spec;
